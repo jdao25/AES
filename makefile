@@ -4,4 +4,4 @@ compile:
 
 atom:
 	@clear
-	@cd .. && atom Project && cd Project
+	@cd .. && atom AES && cd AES
