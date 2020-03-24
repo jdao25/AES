@@ -152,7 +152,8 @@ int main(int argc, char const *argv[])
         {
             std::cerr
                 << "Unable to find file or file doesn\'t exist. "
-                << "Please make sure the file path is correct." << std::endl;
+                << "Please make sure both file\'s path & filename are correct."
+                << std::endl;
 
             #ifdef _WIN32
             std::cout
@@ -172,6 +173,7 @@ int main(int argc, char const *argv[])
         return -1;  // End program unsuccessfully
     }
 
+
     // *** If there are no errors execute the code below ***
 
     // Prompt the user for their key
@@ -180,7 +182,17 @@ int main(int argc, char const *argv[])
     std::getline(std::cin, key);
 
     // Run the encryption algorithm
-    AES128Encrypt(key.c_str());
+    // AES128Encrypt(key.c_str());
+
+    // Once encrypted, output encrypted file as filename.enc
+    std::string encryptedFilename = fullPath.substr(0, fullPath.find_last_of(".") + 1) + "enc";
+
+    std::ofstream outfile(encryptedFilename);
+    // outfile << file;
+
+    // Properly close the files
+    infile.close();
+    outfile.close();
 
     return 0;   // Successful
 }
