@@ -129,7 +129,7 @@ void  mixColumns(unsigned char *state)
 
 void AES128Encrypt(const char *key)
 {
-    
+    unsigned char keySchedule[11];
 }
 
 
@@ -172,11 +172,14 @@ int main(int argc, char const *argv[])
         return -1;  // End program unsuccessfully
     }
 
-    // If there are no errors execute the code below
+    // *** If there are no errors execute the code below ***
+
+    // Prompt the user for their key
     std::cout << "Please enter your key:  ";
     std::string key;
     std::getline(std::cin, key);
 
+    // Run the encryption algorithm
     AES128Encrypt(key.c_str());
 
     return 0;   // Successful
