@@ -170,7 +170,7 @@ int main(int argc, char const *argv[])
 
             #ifdef _WIN32
             std::cout
-                << "Common error:"
+                << "Common error: "
                 << "Path needs to be C:\\Path\\....\\filename.txt.txt "
                 << "instead of C:\\Path\\....\\filename.txt" << std::endl;
             #endif // ! _WIN32
