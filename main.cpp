@@ -127,23 +127,9 @@ void  mixColumns(unsigned char *state)
 }
 
 
-void encryptionAES(unsigned char *message, unsigned char *key)
+void AES128Encrypt(const char *key)
 {
-    keyAddition(message, key);
-
-    // Repeat for round 1 - 9
-    for (int round = 1; round <= 9; round++)
-    {
-        byteSubstitution(message);
-        shiftRows(message);
-        mixColumns(message);
-        keyAddition(message, key);
-    }
-
-    // Round 10
-    byteSubstitution(message);
-    shiftRows(message);
-    keyAddition(message, key);
+    
 }
 
 
@@ -191,7 +177,7 @@ int main(int argc, char const *argv[])
     std::string key;
     std::getline(std::cin, key);
 
-    
+    AES128Encrypt(key.c_str());
 
     return 0;   // Successful
 }
