@@ -190,6 +190,7 @@ int main(int argc, char const *argv[])
     std::cout << "Please enter your key:  ";
     std::string key;
     std::getline(std::cin, key);
+    
 
     std::cout << "key:  " << key << std::endl;
 
