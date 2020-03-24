@@ -153,7 +153,7 @@ int main(int argc, char const *argv[])
     std::ifstream infile;
 
     // If there is an argument besides the executable
-    if (argc > 1)
+    if (argc == 2)
     {
         // Get the filename from the terminal/cmd line
         fullPath = argv[1];
