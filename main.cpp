@@ -2,6 +2,10 @@
 #include <fstream>
 #include <map>
 
+#ifdef _WIN32
+#include <string>   // This is for the getline function to read key
+#endif // ! _WIN32
+
 // data
 const static unsigned char sbox[] = {
     0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
@@ -146,40 +150,41 @@ void encryptionAES(unsigned char *message, unsigned char *key)
 int main(int argc, char const *argv[])
 {
     std::string fullPath;
+    std::ifstream infile;
 
+    // If there is an argument besides the executable
     if (argc > 1)
     {
-        // Get the filename with path from the command line / terminal
+        // Get the filename from the terminal/cmd line
         fullPath = argv[1];
 
-        std::ifstream file(fullPath.c_str());
+        // Open the filename that user gave
+        infile.open(fullPath);
 
-        // If the file doesn't exist, end the program
-        if (!file)
+        // If there is no file or unable to find path to file
+        if (!infile)
         {
-            std::cout << "Unable to find file." << std::endl;
-            return 0;   // End the program. If no file then there is nothing to be done
-        }
+            std::cerr
+                << "Unable to find file or file doesn\'t exist. "
+                << "Please make sure the file path is correct." << std::endl;
 
-        std::cout << "File found" << std::endl;
+            #ifdef _WIN32
+            std::cout
+                << "Common error:"
+                << "Path needs to be C:\\Path\\....\\filename.txt.txt "
+                << "instead of C:\\Path\\....\\filename.txt" << std::endl;
+            #endif // ! _WIN32
+
+            return -1;   // End program unsuccessfully
+        }
     }
     else
     {
-        std::cout << "Need two Arguments. ./AES128encrypt Argument2" << std::endl;
-        return 0;   // End the program
+        std::cerr
+            << "Take in 2 arguments. " << std::endl
+            << "eg. AES128encrypt Argument2" << std::endl;
+        return -1;  // End program unsuccessfully
     }
 
-    std::string path = fullPath.substr(0, fullPath.find_last_of("/\\") + 1);
-    std::string newFilename = fullPath.substr(0, fullPath.find_last_of(".") + 1) + "enc";
-    std::string filename = fullPath.substr(fullPath.find_last_of("/\\") + 1);
-
-    std::cout << newFilename << std::endl;
-
-    std::cout << "Key:  ";
-    std::string key;
-    std::getline(std::cin, key);
-
-    //encryptionAES();
-
-    return 0;
+    return 0;   // Successful
 }
