@@ -186,5 +186,13 @@ int main(int argc, char const *argv[])
         return -1;  // End program unsuccessfully
     }
 
+    // If there are no errors execute the code below
+    std::cout << "Please enter your key:  ";
+    std::string key;
+    std::getline(std::cin, key);
+
+    std::cout << "key:  " << key << std::endl;
+
+
     return 0;   // Successful
 }
