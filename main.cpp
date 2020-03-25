@@ -224,7 +224,15 @@ int main(int argc, char const *argv[])
 
     #define BUFFER_SIZE 16
     unsigned char buffer[BUFFER_SIZE];
-    
+    std::string testVar;
+
+    // Keep looping until the end of the file
+    while (infile.read((char *)buffer, BUFFER_SIZE))
+    {
+        getline(infile, testVar);
+        std::cout << testVar << std::endl;
+    }
+
 
     // Once encrypted, output encrypted file as filename.enc
     std::string encryptedFilename = fullPath.substr(0, fullPath.find_last_of(".") + 1) + "enc";
