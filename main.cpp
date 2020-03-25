@@ -67,12 +67,48 @@ static unsigned char mul_3[] = {
 const static unsigned char rcon[] = {0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36};
 
 
-unsigned char keySchedule(unsigned char *key)
+void keyExpansionCore(unsigned char *in, unsigned char rcon_iter)
 {
-    unsigned char newKey;
-    return newKey;
+    unsigned int * q = (unsigned int *) in;
+    // Left rotate bytes
+    *q = (*q >> 8 | ((*q & 0xff) << 24));
+
+    in[0] = sbox[in[0]]; in[1] = sbox[in[1]];
+    in[2] = sbox[in[2]]; in[3] = sbox[in[3]];
+
+    // RCon XOR
+    in[0] ^= rcon[rcon_iter];
 }
 
+
+void keyExpansion(unsigned *inputKey, unsigned *expandedKey)
+{
+    for (int idx = 0; idx < 16; idx++)
+        expandedKey[idx] = inputKey[idx];
+
+    unsigned int numBytes = 16;
+    int rcon_iter = 1;
+    unsigned char temp[4];
+
+    // Generate the next 160 bytes
+    while (numBytes < 176)
+    {
+        // Read 4 bytes for the core
+        for (int idx = 0; idx < 4; idx++)
+        temp[idx] = expandedKey[idx + numBytes - 4];
+
+        // Perform the core once for each 16 byte key
+        if (numBytes % 16 == 0)
+            keyExpansionCore(temp, rcon_iter++);
+
+        // XOR temp with [numBytes - 16], and store in expandedKey
+        for (unsigned char a = 0; a < 4; a++)
+        {
+            expandedKey[numBytes] = expandedKey[numBytes - 16] ^ temp[a];
+            numBytes++;
+        }
+    }
+}
 
 void keyAddition(unsigned char *state, unsigned char *key)
 {
