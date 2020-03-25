@@ -3,7 +3,7 @@
 #include <map>
 
 #ifdef _WIN32
-#include <string>   // This is for the getline function to read key
+#include <string>   // This is for the getline function to read key for Windows
 #endif // ! _WIN32
 
 // data
