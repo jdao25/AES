@@ -81,8 +81,9 @@ void keyExpansionCore(unsigned char *in, unsigned char rcon_iter)
 }
 
 
-void keyExpansion(unsigned *inputKey, unsigned *expandedKey)
+unsigned char* keyExpansion(unsigned char *inputKey)
 {
+    unsigned char *expandedKey;
     for (int idx = 0; idx < 16; idx++)
         expandedKey[idx] = inputKey[idx];
 
