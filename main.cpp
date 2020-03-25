@@ -170,16 +170,6 @@ void  mixColumns(unsigned char *state)
 }
 
 
-void AES128Encrypt(unsigned char *key)
-{
-    unsigned char roundKeys[11];
-    unsigned char expandedKey[176];
-    keyExpansion(key, expandedKey);
-
-    std::cout << expandedKey << std::endl;
-}
-
-
 int main(int argc, char const *argv[])
 {
     std::string fullPath;
@@ -231,7 +221,10 @@ int main(int argc, char const *argv[])
 
     // Run the encryption algorithm
     unsigned char *key = (unsigned char*)inputKey.c_str();
-    AES128Encrypt(key);
+
+    #define BUFFER_SIZE 16
+    unsigned char buffer[BUFFER_SIZE];
+    
 
     // Once encrypted, output encrypted file as filename.enc
     std::string encryptedFilename = fullPath.substr(0, fullPath.find_last_of(".") + 1) + "enc";
