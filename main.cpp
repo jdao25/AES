@@ -67,6 +67,13 @@ static unsigned char mul_3[] = {
 const static unsigned char rcon[] = {0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36};
 
 
+unsigned char keySchedule(unsigned char *key)
+{
+    unsigned char newKey;
+    return newKey;
+}
+
+
 void keyAddition(unsigned char *state, unsigned char *key)
 {
     for (int idx = 0; idx < 16; idx++)
@@ -129,7 +136,7 @@ void  mixColumns(unsigned char *state)
 
 void AES128Encrypt(const char *key)
 {
-    unsigned char keySchedule[11];
+    unsigned char allRoundKeys[11];
 }
 
 
@@ -187,12 +194,13 @@ int main(int argc, char const *argv[])
     // Once encrypted, output encrypted file as filename.enc
     std::string encryptedFilename = fullPath.substr(0, fullPath.find_last_of(".") + 1) + "enc";
 
-    std::ofstream outfile(encryptedFilename);
+    // Create a file named filename.enc in directory as plaintext
+    // std::ofstream outfile(encryptedFilename);
     // outfile << file;
 
     // Properly close the files
     infile.close();
-    outfile.close();
+    // outfile.close();
 
     return 0;   // Successful
 }
