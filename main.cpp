@@ -81,9 +81,8 @@ void keyExpansionCore(unsigned char *in, unsigned char rcon_iter)
 }
 
 
-unsigned char* keyExpansion(unsigned char *inputKey)
+void keyExpansion(unsigned char *inputKey, unsigned char *expandedKey)
 {
-    unsigned char *expandedKey;
     for (int idx = 0; idx < 16; idx++)
         expandedKey[idx] = inputKey[idx];
 
@@ -171,9 +170,13 @@ void  mixColumns(unsigned char *state)
 }
 
 
-void AES128Encrypt(const char *key)
+void AES128Encrypt(unsigned char *key)
 {
-    unsigned char allRoundKeys[11];
+    unsigned char roundKeys[11];
+    unsigned char expandedKey[176];
+    keyExpansion(key, expandedKey);
+
+    std::cout << expandedKey << std::endl;
 }
 
 
@@ -223,11 +226,12 @@ int main(int argc, char const *argv[])
 
     // Prompt the user for their key
     std::cout << "Please enter your key:  ";
-    std::string key;
-    std::getline(std::cin, key);
+    std::string inputKey;
+    std::getline(std::cin, inputKey);
 
     // Run the encryption algorithm
-    // AES128Encrypt(key.c_str());
+    unsigned char *key = (unsigned char*)inputKey.c_str();
+    AES128Encrypt(key);
 
     // Once encrypted, output encrypted file as filename.enc
     std::string encryptedFilename = fullPath.substr(0, fullPath.find_last_of(".") + 1) + "enc";
