@@ -183,6 +183,7 @@ int main(int argc, char const *argv[])
 
     // *** If there are no errors execute the code below ***
 
+
     // Prompt the user for their key
     std::cout << "Please enter your key:  ";
     std::string key;
