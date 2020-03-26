@@ -81,6 +81,7 @@ void keyScheduling(unsigned char *inputKey, unsigned char *expandedKey)
 
 void keyAddition(unsigned char *state, unsigned char *key)
 {
+    // XOR the state with the round key
     for (int idx = 0; idx < BLOCK_SIZE; idx++)
         state[idx] ^= key[idx];
 }
@@ -142,7 +143,7 @@ void  mixColumns(unsigned char *state)
             ^ state[(idx << 2) + 2] ^ mul2[state[(idx << 2) + 3]]);
     }
 
-    for (idx = 0; idx < 16; idx++)
+    for (idx = 0; idx < BLOCK_SIZE; idx++)
         state[idx] = tmp[idx];
 }
 

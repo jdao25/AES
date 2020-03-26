@@ -66,21 +66,30 @@ int main(int argc, char const *argv[])
     unsigned char expandedKey[176];
     keyScheduling(key, expandedKey);    // Key is now expanded to 176 bytes
 
+    std::cout << expandedKey << std::endl;
+
     unsigned char message[BLOCK_SIZE];
+    int bytesRead = 0;  // This will be used to track how bytes is read
+    unsigned int keyTracker = 0;
 
     // while there is 16 bytes of the message
-    while(infile.read((char *)message, BLOCK_SIZE))
+    while(!infile.eof())
     {
-        // Padding messaage goes here
+        infile.read((char *)message, BLOCK_SIZE);
+        bytesRead = infile.gcount();
 
-        // I will delete this line but
-        // I just want to see what this print out in the terminal
-        // I beleive it will print 128 bit from the file
-        std::cout << message << std::endl;
+        if (bytesRead < BLOCK_SIZE)
+            std::cout << "Pad using PKCS5" << std::endl;
 
+        unsigned char keyUsed[BLOCK_SIZE];
+        int i = 0;
+        for (int idx = keyTracker ; idx < BLOCK_SIZE; idx++)
+            keyUsed[i++] = expandedKey[idx];
+
+        keyTracker += BLOCK_SIZE;
 
         // Function will take in the file to be encrypted along w/ the expanded key
-        encryption(message, expandedKey);
+        encryption(message, keyUsed);
 
         // outfile << state;
     }

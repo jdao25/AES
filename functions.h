@@ -14,6 +14,7 @@ std::string removeSpacing(const std::string& key)
         if (key[idx] != ' ')
             newKey += key[idx];
     }
+    
     return newKey;
 }
 
