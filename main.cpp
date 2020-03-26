@@ -1,5 +1,5 @@
 #include "aes.h"
-
+#include "functions.h"
 
 int main(int argc, char const *argv[])
 {
@@ -23,6 +23,7 @@ int main(int argc, char const *argv[])
                 << "Please make sure both file\'s path & filename are correct."
                 << std::endl;
 
+            // Error message that should only be displayed when using Windows
             #ifdef _WIN32
             std::cout
                 << "Common error: "
@@ -49,14 +50,15 @@ int main(int argc, char const *argv[])
     std::cout << "Please enter your key:  ";
     std::string inputKey;
     std::getline(std::cin, inputKey);
+    inputKey = removeSpacing(inputKey);     // Remove whitespace if any
 
     // Run the encryption algorithm
     unsigned char *key = (unsigned char*)inputKey.c_str();
 
-    #define BUFFER_SIZE 16
+    const int BUFFER_SIZE = 16;
     unsigned char buffer[BUFFER_SIZE];
     unsigned char expandedKey[176];
-    keyExpansion(key, expandedKey);
+    keyScheduling(key, expandedKey);
 
     // Once encrypted, output encrypted file as filename.enc
     std::string encryptedFilename =
