@@ -62,8 +62,16 @@ int main(int argc, char const *argv[])
     unsigned char expandedKey[176];
     keyScheduling(key, expandedKey);    // Key is now expanded to 176 bytes
 
+    const int BUFFER_SIZE = 16;
+    unsigned char state[BUFFER_SIZE];
+
+    int count = 1;
+    while(infile.read((char *)state, BUFFER_SIZE))
+    {
+    }
+
     // Function will take in the file to be encrypted along w/ the expanded key
-    encryption(infile, expandedKey);
+    encryption(state, expandedKey);
 
 
 

@@ -20,7 +20,7 @@ void keyAddition(unsigned char *, unsigned char *); // XOR Round key with state
 void byteSubstitution(unsigned char *); // replace bytes with value in sbox
 void shiftRows(unsigned char *); // Shift rows
 void  mixColumns(unsigned char *); // Matrix multiplication  column with given matrix
-void encryption(std::ifstream&, unsigned char *); // Encrypt the message using the key
+void encryption(unsigned char *, unsigned char *); // Encrypt the message using the key
 
 
 void gFunction(unsigned char *input, unsigned char rcon_iter)
@@ -126,10 +126,18 @@ void  mixColumns(unsigned char *state)
 
     for (idx = 0; idx < 4; idx++)
     {
-        tmp[(idx << 2) + 0] = (unsigned char) (mul2[state[(idx << 2) + 0]] ^ mul_3[state[(idx << 2) + 1]] ^ state[(idx << 2) + 2] ^ state[(idx << 2) + 3]);
-        tmp[(idx << 2) + 1] = (unsigned char) (state[(idx << 2) + 0] ^ mul2[state[(idx << 2) + 1]] ^ mul_3[state[(idx << 2) + 2]] ^ state[(idx << 2) + 3]);
-        tmp[(idx << 2) + 2] = (unsigned char) (state[(idx << 2) + 0] ^ state[(idx << 2) + 1] ^ mul2[state[(idx << 2) + 2]] ^ mul_3[state[(idx << 2) + 3]]);
-        tmp[(idx << 2) + 3] = (unsigned char) (mul_3[state[(idx << 2) + 0]] ^ state[(idx << 2) + 1] ^ state[(idx << 2) + 2] ^ mul2[state[(idx << 2) + 3]]);
+        tmp[(idx << 2) + 0] =
+            (unsigned char) (mul2[state[(idx << 2) + 0]] ^ mul_3[state[(idx << 2) + 1]]
+            ^ state[(idx << 2) + 2] ^ state[(idx << 2) + 3]);
+        tmp[(idx << 2) + 1] =
+            (unsigned char) (state[(idx << 2) + 0] ^ mul2[state[(idx << 2) + 1]]
+            ^ mul_3[state[(idx << 2) + 2]] ^ state[(idx << 2) + 3]);
+        tmp[(idx << 2) + 2] =
+            (unsigned char) (state[(idx << 2) + 0] ^ state[(idx << 2) + 1]
+            ^ mul2[state[(idx << 2) + 2]] ^ mul_3[state[(idx << 2) + 3]]);
+        tmp[(idx << 2) + 3] =
+            (unsigned char) (mul_3[state[(idx << 2) + 0]] ^ state[(idx << 2) + 1]
+            ^ state[(idx << 2) + 2] ^ mul2[state[(idx << 2) + 3]]);
     }
 
     for (idx = 0; idx < 16; idx++)
@@ -137,20 +145,9 @@ void  mixColumns(unsigned char *state)
 }
 
 
-void encryption(std::ifstream& infile, unsigned char *key)
+void encryption(unsigned char *state, unsigned char *key)
 {
-    const int BUFFER_SIZE = 16;
-    unsigned char buffer[BUFFER_SIZE];
-
-    int count = 0;
-    while(infile.read((char *)buffer, BUFFER_SIZE))
-    {
-        std::cout << count++ << std::endl;
-    }
-
-    unsigned char *state;
     keyAddition(state, key);
-
 
     int rounds = 9;
 
