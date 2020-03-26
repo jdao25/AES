@@ -3,17 +3,17 @@
 
 int main(int argc, char const *argv[])
 {
-    std::string fullPath;
+    std::string inputFile;
     std::ifstream infile;
 
     // If there is an argument besides the executable
     if (argc == 2)
     {
         // Get the filename from the terminal/cmd line
-        fullPath = argv[1];
+        inputFile = argv[1];
 
         // Open the filename that user gave
-        infile.open(fullPath);
+        infile.open(inputFile);
 
         // If there is no file or unable to find path to file
         if (!infile)
@@ -59,7 +59,8 @@ int main(int argc, char const *argv[])
     keyExpansion(key, expandedKey);
 
     // Once encrypted, output encrypted file as filename.enc
-    std::string encryptedFilename = fullPath.substr(0, fullPath.find_last_of(".") + 1) + "enc";
+    std::string encryptedFilename =
+        inputFile.substr(0, inputFile.find_last_of(".") + 1) + "enc";
 
     // Create a file named filename.enc in directory as plaintext
     // std::ofstream outfile(encryptedFilename);

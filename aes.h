@@ -1,7 +1,7 @@
 #ifndef AES_H
 #define AES_H
 
-// Headings
+// Headers 
 #include <iostream>
 #include <fstream>
 #include <map>
@@ -11,6 +11,15 @@
 #endif // ! _WIN32
 
 #include "constants.h"
+
+
+// Functions Declarations
+void gFunction(unsigned char *, unsigned char); // Will be used in keyExpansion
+void keyExpansion(unsigned char *, unsigned char *); // Expand key to 176 bytes. 16 bytes per round. 11 rounds
+void keyAddition(unsigned char *, unsigned char *); // XOR Round key with state
+void byteSubstitution(unsigned char *); // replace bytes with value in sbox
+void shiftRows(unsigned char *); // Shift rows
+void  mixColumns(unsigned char *); // Matrix multiplication  column with given matrix
 
 
 void gFunction(unsigned char *in, unsigned char rcon_iter)
