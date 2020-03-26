@@ -5,12 +5,17 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <cstring>
 
-#ifdef _WIN32
+
+// #ifdef _WIN32
 #include <string>   // This is for the getline function to read key for Windows
-#endif // ! _WIN32
+// #endif // ! _WIN32
 
 #include "constants.h"
+
+
+#define BUFFER_SIZE 16
 
 
 // Functions Declarations

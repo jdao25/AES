@@ -1,6 +1,7 @@
 #include "aes.h"
 #include "functions.h"
 
+
 int main(int argc, char const *argv[])
 {
     std::string inputFile;
@@ -47,8 +48,12 @@ int main(int argc, char const *argv[])
 
 
     // Create an encrypted file name. File named as filename.enc
-    std::string encryptedFilename;
-        inputFile.substr(0, inputFile.find_last_of(".") + 1) + "enc";
+    std::string encryptedFilename =
+        inputFile.substr(inputFile.find_last_of(".") + 1) + ".enc";
+
+    std::cout << "encryptedFilename:  " << encryptedFilename << std::endl;
+
+    std::ofstream outfile(encryptedFilename, std::ios_base::app);
 
     // Prompt the user for their key
     std::cout << "Please enter your key:  ";
@@ -62,26 +67,33 @@ int main(int argc, char const *argv[])
     unsigned char expandedKey[176];
     keyScheduling(key, expandedKey);    // Key is now expanded to 176 bytes
 
-    const int BUFFER_SIZE = 16;
     unsigned char state[BUFFER_SIZE];
 
-    int count = 1;
     while(infile.read((char *)state, BUFFER_SIZE))
     {
+        int originalLen = std::strlen((const char *)state);
+        int lenOfPaddedMessage = originalLen;
+
+        if (lenOfPaddedMessage % 16 != 0)
+            lenOfPaddedMessage = (lenOfPaddedMessage / 16 + 1) * 16;
+
+        unsigned char *paddedMessage = new unsigned char[lenOfPaddedMessage];
+
+        for (int idx = 0; idx < lenOfPaddedMessage; idx++)
+        {
+            if (idx > originalLen) paddedMessage[idx] = 0;
+            else paddedMessage[idx] = state[idx];
+        }
+
+        // Function will take in the file to be encrypted along w/ the expanded key
+        encryption((unsigned char *)paddedMessage, expandedKey);
+
+        outfile << state;
     }
-
-    // Function will take in the file to be encrypted along w/ the expanded key
-    encryption(state, expandedKey);
-
-
-
-    // Create a file named filename.enc in directory as plaintext
-    // std::ofstream outfile(encryptedFilename);
-    // outfile << file;
 
     // Properly close the files
     infile.close();
-    // outfile.close();
+    outfile.close();
 
     return 0;   // Successful
 }
