@@ -148,9 +148,16 @@ void  mixColumns(unsigned char *state)
 }
 
 
-void encryption(unsigned char *state, unsigned char *key)
+void encryption(unsigned char *state, unsigned char *expandedKey)
 {
-    keyAddition(state, key);
+    int keyTracker = 0;
+    unsigned char roundKey[BLOCK_SIZE];
+
+    for (int i = 0, idx = keyTracker; idx < BLOCK_SIZE; idx++)
+        roundKey[i++] = expandedKey[idx];
+    keyTracker += BLOCK_SIZE;
+
+    keyAddition(state, roundKey);
 
     int rounds = 9;
 
@@ -160,13 +167,23 @@ void encryption(unsigned char *state, unsigned char *key)
         byteSubstitution(state);
         shiftRows(state);
         mixColumns(state);
-        keyAddition(state, key);
+
+        for (int i = 0, idx = keyTracker; idx < BLOCK_SIZE; idx++)
+            roundKey[i] = expandedKey[idx];
+        keyTracker += BLOCK_SIZE;
+
+        keyAddition(state, roundKey);
     }
 
     // Round 10 will not have a Mix Columns section
     byteSubstitution(state);
     shiftRows(state);
-    keyAddition(state, key);
+
+    for (int i = 0, idx = keyTracker; idx < BLOCK_SIZE; idx++)
+        roundKey[i] = expandedKey[idx];
+    keyTracker += BLOCK_SIZE;
+
+    keyAddition(state, roundKey);
 }
 
 

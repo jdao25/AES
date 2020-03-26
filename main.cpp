@@ -66,11 +66,9 @@ int main(int argc, char const *argv[])
     unsigned char expandedKey[176];
     keyScheduling(key, expandedKey);    // Key is now expanded to 176 bytes
 
-    std::cout << expandedKey << std::endl;
-
     unsigned char message[BLOCK_SIZE];
     int bytesRead = 0;  // This will be used to track how bytes is read
-    unsigned int keyTracker = 0;
+    unsigned int keyTracker = 0;    // This will track every round key in expanded key
 
     // while there is 16 bytes of the message
     while(!infile.eof())
@@ -81,17 +79,11 @@ int main(int argc, char const *argv[])
         if (bytesRead < BLOCK_SIZE)
             std::cout << "Pad using PKCS5" << std::endl;
 
-        unsigned char keyUsed[BLOCK_SIZE];
-        int i = 0;
-        for (int idx = keyTracker ; idx < BLOCK_SIZE; idx++)
-            keyUsed[i++] = expandedKey[idx];
-
-        keyTracker += BLOCK_SIZE;
-
         // Function will take in the file to be encrypted along w/ the expanded key
-        encryption(message, keyUsed);
+        encryption(message, expandedKey);
 
-        // outfile << state;
+        for (int idx = 0; idx < bytesRead; idx++)
+            outfile << message[idx];
     }
 
     // Properly close the files
