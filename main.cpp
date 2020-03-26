@@ -13,7 +13,7 @@ int main(int argc, char const *argv[])
         inputFile = argv[1];
 
         // Open the filename that user gave
-        infile.open(inputFile);
+        infile.open(inputFile, std::ios_base::binary);
 
         // If there is no file or unable to find path to file
         if (!infile)
@@ -46,6 +46,10 @@ int main(int argc, char const *argv[])
     // *** If there are no errors execute the code below ***
 
 
+    // Create an encrypted file name. File named as filename.enc
+    std::string encryptedFilename;
+        inputFile.substr(0, inputFile.find_last_of(".") + 1) + "enc";
+
     // Prompt the user for their key
     std::cout << "Please enter your key:  ";
     std::string inputKey;
@@ -55,14 +59,13 @@ int main(int argc, char const *argv[])
     // Run the encryption algorithm
     unsigned char *key = (unsigned char*)inputKey.c_str();
 
-    const int BUFFER_SIZE = 16;
-    unsigned char buffer[BUFFER_SIZE];
     unsigned char expandedKey[176];
-    keyScheduling(key, expandedKey);
+    keyScheduling(key, expandedKey);    // Key is now expanded to 176 bytes
 
-    // Once encrypted, output encrypted file as filename.enc
-    std::string encryptedFilename =
-        inputFile.substr(0, inputFile.find_last_of(".") + 1) + "enc";
+    // The encryption function will take in the file we want to encrypt along with the expanded key
+    encryption(infile, expandedKey);
+
+
 
     // Create a file named filename.enc in directory as plaintext
     // std::ofstream outfile(encryptedFilename);

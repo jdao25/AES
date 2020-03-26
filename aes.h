@@ -20,7 +20,7 @@ void keyAddition(unsigned char *, unsigned char *); // XOR Round key with state
 void byteSubstitution(unsigned char *); // replace bytes with value in sbox
 void shiftRows(unsigned char *); // Shift rows
 void  mixColumns(unsigned char *); // Matrix multiplication  column with given matrix
-void encryption(unsigned char *, unsigned char *); // Encrypt the message using the key
+void encryption(std::ifstream&, unsigned char *); // Encrypt the message using the key
 
 
 void gFunction(unsigned char *input, unsigned char rcon_iter)
@@ -137,9 +137,36 @@ void  mixColumns(unsigned char *state)
 }
 
 
-void encryption(unsigned char *message, unsigned char *key)
+void encryption(std::ifstream& infile, unsigned char *key)
 {
+    const int BUFFER_SIZE = 16;
+    unsigned char buffer[BUFFER_SIZE];
 
+    int count = 0;
+    while(infile.read((char *)buffer, BUFFER_SIZE))
+    {
+        std::cout << count++ << std::endl;
+    }
+
+    unsigned char *state;
+    keyAddition(state, key);
+
+
+    int rounds = 9;
+
+    // For rounds 1 - 9
+    for (int idx = 1; idx <= rounds; idx++)
+    {
+        byteSubstitution(state);
+        shiftRows(state);
+        mixColumns(state);
+        keyAddition(state, key);
+    }
+
+    // Round 10 will not have a Mix Columns section
+    byteSubstitution(state);
+    shiftRows(state);
+    keyAddition(state, key);
 }
 
 
