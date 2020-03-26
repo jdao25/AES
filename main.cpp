@@ -51,8 +51,6 @@ int main(int argc, char const *argv[])
     std::string encryptedFilename =
         inputFile.substr(inputFile.find_last_of(".") + 1) + ".enc";
 
-    std::cout << "encryptedFilename:  " << encryptedFilename << std::endl;
-
     // Output the encrypted message into a file
     // std::ofstream outfile(encryptedFilename, std::ios_base::app);
 
@@ -68,11 +66,18 @@ int main(int argc, char const *argv[])
     unsigned char expandedKey[176];
     keyScheduling(key, expandedKey);    // Key is now expanded to 176 bytes
 
-    unsigned char message[BUFFER_SIZE];
+    unsigned char message[BLOCK_SIZE];
 
-    while(infile.read((char *)message, BUFFER_SIZE))
+    // while there is 16 bytes of the message
+    while(infile.read((char *)message, BLOCK_SIZE))
     {
         // Padding messaage goes here
+
+        // I will delete this line but
+        // I just want to see what this print out in the terminal
+        // I beleive it will print 128 bit from the file
+        std::cout << message << std::endl;
+
 
         // Function will take in the file to be encrypted along w/ the expanded key
         encryption(message, expandedKey);

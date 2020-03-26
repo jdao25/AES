@@ -1,6 +1,10 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+
+#define BLOCK_SIZE 16
+
+
 // Rigndael Substitution Box
 // Will be using for byte substitution
 const static unsigned char sbox[] = {

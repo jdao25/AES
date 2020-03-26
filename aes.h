@@ -15,9 +15,6 @@
 #include "constants.h"
 
 
-#define BUFFER_SIZE 16
-
-
 // Functions Declarations
 void gFunction(unsigned char *, unsigned char); // Will be used in key scheduling process
 void keyScheduling(unsigned char *, unsigned char *); // Expand key to 176 bytes. 16 bytes per round. 11 rounds
@@ -48,7 +45,7 @@ void gFunction(unsigned char *input, unsigned char rcon_iter)
 
 void keyScheduling(unsigned char *inputKey, unsigned char *expandedKey)
 {
-    unsigned int numBytes = 16;
+    unsigned int numBytes = BLOCK_SIZE;
 
     for (int idx = 0; idx < numBytes; idx++)
         expandedKey[idx] = inputKey[idx];
@@ -67,7 +64,7 @@ void keyScheduling(unsigned char *inputKey, unsigned char *expandedKey)
              temp[idx] = expandedKey[idx + numBytes - 4];
 
         // Execute after each new key
-        if (numBytes % 16 == 0)
+        if (numBytes % BLOCK_SIZE == 0)
         {
             gFunction(temp, rcon_iter);
             rcon_iter++;
@@ -76,7 +73,7 @@ void keyScheduling(unsigned char *inputKey, unsigned char *expandedKey)
         // XOR the temp array from g function to with the first 4 bytes
         for (unsigned char idx = 0; idx < 4; idx++)
         {
-            expandedKey[numBytes] = expandedKey[numBytes - 16] ^ temp[idx];
+            expandedKey[numBytes] = expandedKey[numBytes - BLOCK_SIZE] ^ temp[idx];
             numBytes++;
         }
     }
@@ -84,14 +81,14 @@ void keyScheduling(unsigned char *inputKey, unsigned char *expandedKey)
 
 void keyAddition(unsigned char *state, unsigned char *key)
 {
-    for (int idx = 0; idx < 16; idx++)
+    for (int idx = 0; idx < BLOCK_SIZE; idx++)
         state[idx] ^= key[idx];
 }
 
 
 void byteSubstitution(unsigned char *state)
 {
-    for (int idx = 0; idx < 16; idx++)
+    for (int idx = 0; idx < BLOCK_SIZE; idx++)
         state[idx] = sbox[state[idx]];
 }
 
@@ -99,7 +96,7 @@ void byteSubstitution(unsigned char *state)
 void shiftRows(unsigned char *state)
 {
     std::map<int, int> row = { {12, 1}, {13, 2}, {14, 3} };
-    unsigned char tmp[16];
+    unsigned char tmp[BLOCK_SIZE];
     int idx = 0;    // Loop index
     int s1 = 0, s2 = 4, s3 = 8, s4 = 12;   // state index
 
@@ -119,14 +116,14 @@ void shiftRows(unsigned char *state)
         s4 = ((s4 >= 12)? row[s4] : (s4 + 5) );
     }
 
-    for (idx = 0; idx < 16; idx++)
+    for (idx = 0; idx < BLOCK_SIZE; idx++)
         state[idx] = tmp[idx];
 }
 
 
 void  mixColumns(unsigned char *state)
 {
-    unsigned char tmp[16];
+    unsigned char tmp[BLOCK_SIZE];
     int idx = 0;
 
     for (idx = 0; idx < 4; idx++)
