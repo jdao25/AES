@@ -62,7 +62,7 @@ int main(int argc, char const *argv[])
     unsigned char expandedKey[176];
     keyScheduling(key, expandedKey);    // Key is now expanded to 176 bytes
 
-    // The encryption function will take in the file we want to encrypt along with the expanded key
+    // Function will take in the file to be encrypted along w/ the expanded key
     encryption(infile, expandedKey);
 
 
