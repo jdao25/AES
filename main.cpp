@@ -53,7 +53,8 @@ int main(int argc, char const *argv[])
 
     std::cout << "encryptedFilename:  " << encryptedFilename << std::endl;
 
-    std::ofstream outfile(encryptedFilename, std::ios_base::app);
+    // Output the encrypted message into a file
+    // std::ofstream outfile(encryptedFilename, std::ios_base::app);
 
     // Prompt the user for their key
     std::cout << "Please enter your key:  ";
@@ -67,33 +68,21 @@ int main(int argc, char const *argv[])
     unsigned char expandedKey[176];
     keyScheduling(key, expandedKey);    // Key is now expanded to 176 bytes
 
-    unsigned char state[BUFFER_SIZE];
+    unsigned char message[BUFFER_SIZE];
 
-    while(infile.read((char *)state, BUFFER_SIZE))
+    while(infile.read((char *)message, BUFFER_SIZE))
     {
-        int originalLen = std::strlen((const char *)state);
-        int lenOfPaddedMessage = originalLen;
-
-        if (lenOfPaddedMessage % 16 != 0)
-            lenOfPaddedMessage = (lenOfPaddedMessage / 16 + 1) * 16;
-
-        unsigned char *paddedMessage = new unsigned char[lenOfPaddedMessage];
-
-        for (int idx = 0; idx < lenOfPaddedMessage; idx++)
-        {
-            if (idx > originalLen) paddedMessage[idx] = 0;
-            else paddedMessage[idx] = state[idx];
-        }
+        // Padding messaage goes here
 
         // Function will take in the file to be encrypted along w/ the expanded key
-        encryption((unsigned char *)paddedMessage, expandedKey);
+        encryption(message, expandedKey);
 
-        outfile << state;
+        // outfile << state;
     }
 
     // Properly close the files
     infile.close();
-    outfile.close();
+    // outfile.close();
 
     return 0;   // Successful
 }
