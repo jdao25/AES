@@ -2,8 +2,6 @@
 #define FUNCTIONS_H
 
 
-#include <cstring>
-
 std::string removeSpacing(const std::string&);
 void padding(unsigned char *, int);   // PKCS5 will be used
 

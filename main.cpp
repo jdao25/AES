@@ -44,6 +44,7 @@ int main(int argc, char const *argv[])
     }
 
 
+
     // *** If there are no errors execute the code below ***
 
 
@@ -55,7 +56,7 @@ int main(int argc, char const *argv[])
     std::string encryptedFilename =
         inputFile.substr(0, inputFile.find_last_of(".")) + ".enc";
 
-    outfile.open(encryptedFilename, std::ios::app);
+    outfile.open(encryptedFilename, std::ios::app | std::ios::binary);
 
     // Prompt the user for their key
     std::cout << "Please enter your key:  ";
@@ -65,11 +66,8 @@ int main(int argc, char const *argv[])
 
     unsigned char *key = (unsigned char*)inputKey.c_str();
 
-    unsigned char allRoundKeys[176];
-    keyScheduling(key, allRoundKeys);   // Generating all 10 round keys
-
     unsigned char message[BLOCK_SIZE];
-    char *encryptedMessage;
+    char *encryptedMessage;     // This will contain the encrypted message
     int bytesRead = 0;  // This will be used to track how bytes is read
 
     // while there is 16 bytes of the message
@@ -81,11 +79,10 @@ int main(int argc, char const *argv[])
         if (bytesRead < BLOCK_SIZE)
         {
             unsigned char *paddedMessage = PKCS5Padding(message);
-            encryptedMessage = encryption(paddedMessage, allRoundKeys);
+            encryptedMessage = encryption(paddedMessage, key);
         }
         else
-            encryptedMessage = encryption(message, allRoundKeys);
-
+            encryptedMessage = encryption(message, key);
 
        outfile.write(encryptedMessage, BLOCK_SIZE);
     }
