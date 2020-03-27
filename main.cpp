@@ -52,7 +52,7 @@ int main(int argc, char const *argv[])
         inputFile.substr(inputFile.find_last_of(".") + 1) + ".enc";
 
     // Output the encrypted message into a file
-    // std::ofstream outfile(encryptedFilename, std::ios_base::app);
+    std::ofstream outfile(encryptedFilename, std::ios_base::app);
 
     // Prompt the user for their key
     std::cout << "Please enter your key:  ";
@@ -70,25 +70,26 @@ int main(int argc, char const *argv[])
     int bytesRead = 0;  // This will be used to track how bytes is read
     unsigned int keyTracker = 0;    // This will track every round key in expanded key
 
+
     // while there is 16 bytes of the message
     while(!infile.eof())
     {
         infile.read((char *)message, BLOCK_SIZE);
         bytesRead = infile.gcount();
 
-        if (bytesRead < BLOCK_SIZE)
-            std::cout << "Pad using PKCS5" << std::endl;
+        if (bytesRead % BLOCK_SIZE != 0)
+            padding(message, bytesRead);
 
         // Function will take in the file to be encrypted along w/ the expanded key
         encryption(message, expandedKey);
 
-        for (int idx = 0; idx < bytesRead; idx++)
+        for (int idx = 0; idx < BLOCK_SIZE; idx++)
             outfile << message[idx];
     }
 
     // Properly close the files
     infile.close();
-    // outfile.close();
+    outfile.close();
 
     return 0;   // Successful
 }

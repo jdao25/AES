@@ -8,9 +8,9 @@
 #include <cstring>
 
 
-// #ifdef _WIN32
+#ifdef _WIN32
 #include <string>   // This is for the getline function to read key for Windows
-// #endif // ! _WIN32
+#endif // ! _WIN32
 
 #include "constants.h"
 
@@ -89,6 +89,7 @@ void keyAddition(unsigned char *state, unsigned char *key)
 
 void byteSubstitution(unsigned char *state)
 {
+    // Substituting each box with what equivalent in the sbox
     for (int idx = 0; idx < BLOCK_SIZE; idx++)
         state[idx] = sbox[state[idx]];
 }
