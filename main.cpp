@@ -51,9 +51,6 @@ int main(int argc, char const *argv[])
     std::string encryptedFilename =
         inputFile.substr(0, inputFile.find_last_of(".")) + ".enc";
 
-    // Output the encrypted message into a file
-    std::ofstream outfile(encryptedFilename, std::ios_base::app);
-
     // Prompt the user for their key
     std::cout << "Please enter your key:  ";
     std::string inputKey;
@@ -74,19 +71,25 @@ int main(int argc, char const *argv[])
         infile.read((char *)message, BLOCK_SIZE);
         bytesRead = infile.gcount();
 
-        std::cout << bytesRead << std::endl;
-
         if (bytesRead < BLOCK_SIZE)
-            padding(message, bytesRead);
+        {
+            int padSize = (BLOCK_SIZE - bytesRead) % BLOCK_SIZE;
 
-        encryption(message, allRoundKeys);
+            if (padSize == 0)
+                padSize = BLOCK_SIZE;
 
-        outfile.write((char *)message, BLOCK_SIZE);
+            // unsigned char value = (unsigned char)padSize;
+
+            int start = bytesRead;
+            for (int idx = 0; idx < BLOCK_SIZE; idx++)
+                message[start++] = 0;
+        }
+
+        encryption(message, allRoundKeys, encryptedFilename);
     }
 
-    // Properly close the files
+    // Properly close the file
     infile.close();
-    outfile.close();
 
     return 0;   // Successful
 }

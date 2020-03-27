@@ -4,6 +4,7 @@
 // Headers
 #include <iostream>
 #include <fstream>
+#include <cstring>
 #include <map>
 
 #ifdef _WIN32
@@ -20,7 +21,7 @@ void keyAddition(unsigned char *, unsigned char *); // XOR Round key with state
 void byteSubstitution(unsigned char *); // replace bytes with value in sbox
 void shiftRows(unsigned char *); // Shift rows
 void  mixColumns(unsigned char *); // Matrix multiplication  column with given matrix
-void encryption(unsigned char *, unsigned char *); // Encrypt the message using the key
+void encryption(unsigned char *, unsigned char *, const std::string&); // Encrypt the message using the key
 
 
 void gFunction(unsigned char *input, unsigned char rcon_iter)
@@ -153,7 +154,7 @@ void  mixColumns(unsigned char *state)
 }
 
 
-void encryption(unsigned char *message, unsigned char *roundKeys)
+void encryption(unsigned char *message, unsigned char *roundKeys, const std::string& eFile)
 {
     unsigned char state[BLOCK_SIZE];
 
@@ -163,18 +164,25 @@ void encryption(unsigned char *message, unsigned char *roundKeys)
     const unsigned int rounds = 9;
 
     //  For rounds 1 - 9
-    for (int idx = 0; idx < 9; idx++)
+    for (int round = 1; round <= 9; round++)
     {
         byteSubstitution(state);
         shiftRows(state);
         mixColumns(state);
-        keyAddition(state, roundKeys + (BLOCK_SIZE * (idx + 1)));
+        keyAddition(state, roundKeys + (BLOCK_SIZE * round));   // 16 bytes of expanded key for each round
     }
 
     // Round 10
     byteSubstitution(state);
     shiftRows(state);
-    keyAddition(state, roundKeys);
+    keyAddition(state, roundKeys + 160);
+
+    std::ofstream outfile;
+
+    outfile.open(eFile, std::ios::app);
+    outfile.write((char *)state, BLOCK_SIZE);
+
+    outfile.close();
 }
 
 

@@ -21,7 +21,7 @@ std::string removeSpacing(const std::string& key)
 }
 
 
-void padding(unsigned char *msg, int msgSize)
+void padding(unsigned char *message, int msgSize)
 {
     // How much we need to pad the msg
     int padSize = (BLOCK_SIZE - msgSize) % BLOCK_SIZE;
@@ -33,7 +33,7 @@ void padding(unsigned char *msg, int msgSize)
 
     int start = msgSize;
     for (int idx = 0; idx < padSize; idx++)
-        msg[start++] = value;
+        message[start++] = value;
 }
 
 
