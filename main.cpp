@@ -74,7 +74,7 @@ int main(int argc, char const *argv[])
     while(!infile.eof())
     {
         infile.read((char *)message, BLOCK_SIZE);
-        bytesRead = infile.gcount();
+        bytesRead = infile.gcount();    // Grabbing the num of bytes of message
 
         if (bytesRead < BLOCK_SIZE)
         {
