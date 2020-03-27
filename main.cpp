@@ -73,19 +73,12 @@ int main(int argc, char const *argv[])
 
         if (bytesRead < BLOCK_SIZE)
         {
-            int padSize = (BLOCK_SIZE - bytesRead) % BLOCK_SIZE;
-
-            if (padSize == 0)
-                padSize = BLOCK_SIZE;
-
-            // unsigned char value = (unsigned char)padSize;
-
-            int start = bytesRead;
-            for (int idx = 0; idx < BLOCK_SIZE; idx++)
-                message[start++] = 0;
+            unsigned char *paddedMessage = PKCS5Padding(message);
+            encryption(paddedMessage, allRoundKeys, encryptedFilename);
         }
+        else
+            encryption(message, allRoundKeys, encryptedFilename);
 
-        encryption(message, allRoundKeys, encryptedFilename);
     }
 
     // Properly close the file

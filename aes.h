@@ -4,7 +4,6 @@
 // Headers
 #include <iostream>
 #include <fstream>
-#include <cstring>
 #include <map>
 
 #ifdef _WIN32
