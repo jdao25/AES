@@ -6,7 +6,6 @@
 #include <fstream>
 #include <map>
 
-
 #ifdef _WIN32
 #include <string>   // This is for the getline function to read key for Windows
 #endif // ! _WIN32
@@ -75,7 +74,7 @@ void keyScheduling(unsigned char *inputKey, unsigned char *key)
             gFunction(temp, rconIter++);
 
         // XOR the temp array from g function to with the first 4 bytes
-        for (int idx = 0; idx < 4; idx++)
+        for (unsigned char idx = 0; idx < 4; idx++)
         {
             key[numBytes] = key[numBytes - BLOCK_SIZE] ^ temp[idx];
             numBytes++;
@@ -83,11 +82,11 @@ void keyScheduling(unsigned char *inputKey, unsigned char *key)
     }
 }
 
-void keyAddition(unsigned char *state, unsigned char *key)
+void keyAddition(unsigned char *state, unsigned char *roundKey)
 {
     // XOR the state with the round key
     for (int idx = 0; idx < BLOCK_SIZE; idx++)
-        state[idx] ^= key[idx];
+        state[idx] ^= roundKey[idx];
 }
 
 
@@ -122,6 +121,7 @@ void shiftRows(unsigned char *state)
         s4 = ((s4 >= 12)? row[s4] : (s4 + 5) );
     }
 
+
     for (idx = 0; idx < BLOCK_SIZE; idx++)
         state[idx] = tmp[idx];
 }
@@ -153,44 +153,28 @@ void  mixColumns(unsigned char *state)
 }
 
 
-void encryption(unsigned char *state, unsigned char *key)
+void encryption(unsigned char *message, unsigned char *roundKeys)
 {
-    int keyTracker = 0;     // Tracking the
-    unsigned char roundKey[BLOCK_SIZE];
+    unsigned char state[BLOCK_SIZE];
 
-    for (int i = 0, idx = keyTracker; idx < BLOCK_SIZE; idx++)
-    {
-        roundKey[i++] = key[idx];
-        keyTracker++;
-    }
+    for (int idx = 0; idx < BLOCK_SIZE; idx++)
+        state[idx] = message[idx];
 
-    keyAddition(state, roundKey);
+    const unsigned int rounds = 9;
 
-    int rounds = 9;
-
-    // For rounds 1 - 9
-    for (int idx = 1; idx <= rounds; idx++)
+    //  For rounds 1 - 9
+    for (int idx = 0; idx < 9; idx++)
     {
         byteSubstitution(state);
         shiftRows(state);
         mixColumns(state);
-
-        for (int i = 0, idx = keyTracker; idx < BLOCK_SIZE; idx++)
-            roundKey[i] = key[idx];
-        keyTracker += BLOCK_SIZE;
-
-        keyAddition(state, roundKey);
+        keyAddition(state, roundKeys + (BLOCK_SIZE * (idx + 1)));
     }
 
-    // Round 10 will not have a Mix Columns section
+    // Round 10
     byteSubstitution(state);
     shiftRows(state);
-
-    for (int i = 0, idx = keyTracker; idx < BLOCK_SIZE; idx++)
-        roundKey[i] = key[idx];
-    keyTracker += BLOCK_SIZE;
-
-    keyAddition(state, roundKey);
+    keyAddition(state, roundKeys);
 }
 
 

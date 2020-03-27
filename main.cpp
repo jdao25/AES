@@ -60,19 +60,10 @@ int main(int argc, char const *argv[])
     std::getline(std::cin, inputKey);
     inputKey = removeSpacing(inputKey);     // Remove whitespace if any
 
-    // Run the encryption algorithm
     unsigned char *key = (unsigned char*)inputKey.c_str();
 
-    unsigned char allRoundKeys[176];    // Array containing all 11 round keys
-    keyScheduling(key, allRoundKeys);    // Key is now expanded to 176 bytes
-
-
-    // int idx = 0;
-    // while(allRoundKeys[idx] != '\0')
-    //     idx++;
-    //
-    // std::cout << "Size:  " << idx << std::endl;
-
+    unsigned char allRoundKeys[176];
+    keyScheduling(key, allRoundKeys);   // Generating all 10 round keys
 
     unsigned char message[BLOCK_SIZE];
     int bytesRead = 0;  // This will be used to track how bytes is read
@@ -83,14 +74,14 @@ int main(int argc, char const *argv[])
         infile.read((char *)message, BLOCK_SIZE);
         bytesRead = infile.gcount();
 
-        if (bytesRead % BLOCK_SIZE != 0)
+        std::cout << bytesRead << std::endl;
+
+        if (bytesRead < BLOCK_SIZE)
             padding(message, bytesRead);
 
-        // Function will take in the file to be encrypted along w/ the expanded key
         encryption(message, allRoundKeys);
 
-        for (int idx = 0; idx < BLOCK_SIZE; idx++)
-            outfile << message[idx];
+        outfile.write((char *)message, BLOCK_SIZE);
     }
 
     // Properly close the files

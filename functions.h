@@ -29,9 +29,11 @@ void padding(unsigned char *msg, int msgSize)
     if (padSize == 0)
         padSize = BLOCK_SIZE;
 
+    unsigned char value = (unsigned char)padSize;
+
     int start = msgSize;
     for (int idx = 0; idx < padSize; idx++)
-        msg[start++] = 0;
+        msg[start++] = value;
 }
 
 
