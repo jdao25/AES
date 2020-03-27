@@ -49,7 +49,7 @@ int main(int argc, char const *argv[])
 
     // Create an encrypted file name. File named as filename.enc
     std::string encryptedFilename =
-        inputFile.substr(inputFile.find_last_of(".") + 1) + ".enc";
+        inputFile.substr(0, inputFile.find_last_of(".")) + ".enc";
 
     // Output the encrypted message into a file
     std::ofstream outfile(encryptedFilename, std::ios_base::app);
@@ -63,13 +63,19 @@ int main(int argc, char const *argv[])
     // Run the encryption algorithm
     unsigned char *key = (unsigned char*)inputKey.c_str();
 
-    unsigned char expandedKey[176];
-    keyScheduling(key, expandedKey);    // Key is now expanded to 176 bytes
+    unsigned char allRoundKeys[176];    // Array containing all 11 round keys
+    keyScheduling(key, allRoundKeys);    // Key is now expanded to 176 bytes
+
+
+    // int idx = 0;
+    // while(allRoundKeys[idx] != '\0')
+    //     idx++;
+    //
+    // std::cout << "Size:  " << idx << std::endl;
+
 
     unsigned char message[BLOCK_SIZE];
     int bytesRead = 0;  // This will be used to track how bytes is read
-    unsigned int keyTracker = 0;    // This will track every round key in expanded key
-
 
     // while there is 16 bytes of the message
     while(!infile.eof())
@@ -81,7 +87,7 @@ int main(int argc, char const *argv[])
             padding(message, bytesRead);
 
         // Function will take in the file to be encrypted along w/ the expanded key
-        encryption(message, expandedKey);
+        encryption(message, allRoundKeys);
 
         for (int idx = 0; idx < BLOCK_SIZE; idx++)
             outfile << message[idx];
