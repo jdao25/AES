@@ -86,7 +86,8 @@ int main(int argc, char const *argv[])
         else
             encryptedMessage = encryption(message, allRoundKeys);
 
-        outfile.write(encryptedMessage, BLOCK_SIZE);
+
+       outfile.write(encryptedMessage, BLOCK_SIZE);
     }
 
     // Properly close the file

@@ -40,14 +40,14 @@ void padding(unsigned char *message, int msgSize)
 unsigned char *PKCS5Padding(unsigned char *message)
 {
     int messageLen = std::strlen((char *)message);
-    int nPidding_size = 8 - (messageLen % 8);
-    unsigned char* paddedMessage = (unsigned char *) malloc(messageLen + nPidding_size);
+    int paddingSize = BLOCK_SIZE - (messageLen % BLOCK_SIZE);
+    unsigned char* paddedMessage = (unsigned char *) malloc(messageLen + paddingSize);
 
     // Copy the message to paddedMessage
     memcpy(paddedMessage, message, messageLen);
 
-    for (int idx = messageLen; idx < (messageLen + nPidding_size); idx++)
-    	paddedMessage[idx] = nPidding_size;
+    for (int idx = messageLen; idx < (messageLen + paddingSize); idx++)
+    	paddedMessage[idx] = paddingSize;
 
     return paddedMessage;
 }
