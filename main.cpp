@@ -47,9 +47,15 @@ int main(int argc, char const *argv[])
     // *** If there are no errors execute the code below ***
 
 
+
+    // Write to the output file
+    std::ofstream outfile;
+
     // Create an encrypted file name. File named as filename.enc
     std::string encryptedFilename =
         inputFile.substr(0, inputFile.find_last_of(".")) + ".enc";
+
+    outfile.open(encryptedFilename, std::ios::app);
 
     // Prompt the user for their key
     std::cout << "Please enter your key:  ";
@@ -63,6 +69,7 @@ int main(int argc, char const *argv[])
     keyScheduling(key, allRoundKeys);   // Generating all 10 round keys
 
     unsigned char message[BLOCK_SIZE];
+    char *encryptedMessage;
     int bytesRead = 0;  // This will be used to track how bytes is read
 
     // while there is 16 bytes of the message
@@ -74,15 +81,17 @@ int main(int argc, char const *argv[])
         if (bytesRead < BLOCK_SIZE)
         {
             unsigned char *paddedMessage = PKCS5Padding(message);
-            encryption(paddedMessage, allRoundKeys, encryptedFilename);
+            encryptedMessage = encryption(paddedMessage, allRoundKeys);
         }
         else
-            encryption(message, allRoundKeys, encryptedFilename);
+            encryptedMessage = encryption(message, allRoundKeys);
 
+        outfile.write(encryptedMessage, BLOCK_SIZE);
     }
 
     // Properly close the file
     infile.close();
+    outfile.close();
 
     return 0;   // Successful
 }

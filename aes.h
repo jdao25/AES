@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <string.h>
 
 #ifdef _WIN32
 #include <string>   // This is for the getline function to read key for Windows
@@ -20,7 +21,7 @@ void keyAddition(unsigned char *, unsigned char *); // XOR Round key with state
 void byteSubstitution(unsigned char *); // replace bytes with value in sbox
 void shiftRows(unsigned char *); // Shift rows
 void  mixColumns(unsigned char *); // Matrix multiplication  column with given matrix
-void encryption(unsigned char *, unsigned char *, const std::string&); // Encrypt the message using the key
+char *encryption(unsigned char *, unsigned char *); // Encrypt the message using the key
 
 
 void gFunction(unsigned char *input, unsigned char rcon_iter)
@@ -121,7 +122,6 @@ void shiftRows(unsigned char *state)
         s4 = ((s4 >= 12)? row[s4] : (s4 + 5) );
     }
 
-
     for (idx = 0; idx < BLOCK_SIZE; idx++)
         state[idx] = tmp[idx];
 }
@@ -153,12 +153,14 @@ void  mixColumns(unsigned char *state)
 }
 
 
-void encryption(unsigned char *message, unsigned char *roundKeys, const std::string& eFile)
+char *encryption(unsigned char *message, unsigned char *roundKeys)
 {
     unsigned char state[BLOCK_SIZE];
 
     for (int idx = 0; idx < BLOCK_SIZE; idx++)
         state[idx] = message[idx];
+
+    keyAddition(state, roundKeys);
 
     const unsigned int rounds = 9;
 
@@ -168,7 +170,7 @@ void encryption(unsigned char *message, unsigned char *roundKeys, const std::str
         byteSubstitution(state);
         shiftRows(state);
         mixColumns(state);
-        keyAddition(state, roundKeys + (BLOCK_SIZE * round));   // 16 bytes of expanded key for each round
+        keyAddition(state, roundKeys + (BLOCK_SIZE * round));   // from the roundKeys skip to index (BLOCK_SIZE * round)
     }
 
     // Round 10
@@ -176,12 +178,10 @@ void encryption(unsigned char *message, unsigned char *roundKeys, const std::str
     shiftRows(state);
     keyAddition(state, roundKeys + 160);
 
-    std::ofstream outfile;
+    char * encryptedMessage  = (char *) malloc(16);
+    memcpy(encryptedMessage, state, 16);
 
-    outfile.open(eFile, std::ios::app);
-    outfile.write((char *)state, BLOCK_SIZE);
-
-    outfile.close();
+    return encryptedMessage;
 }
 
 
