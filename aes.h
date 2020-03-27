@@ -158,6 +158,7 @@ void  mixColumns(unsigned char *state)
 
 char *encryption(unsigned char *message, unsigned char *key)
 {
+    // This will contain all the round keys from round 1 - 10 + initial
     unsigned char roundKeys[176];
     keyScheduling(key, roundKeys);
 

@@ -78,7 +78,7 @@ int main(int argc, char const *argv[])
 
         if (bytesRead < BLOCK_SIZE)
         {
-            unsigned char *paddedMessage = PKCS5Padding(message);
+            unsigned char *paddedMessage = PKCS5Padding(message, bytesRead);
             encryptedMessage = encryption(paddedMessage, key);
         }
         else

@@ -3,7 +3,7 @@
 
 
 std::string removeSpacing(const std::string&);
-void padding(unsigned char *, int);   // PKCS5 will be used
+unsigned char *PKCS5Padding(unsigned char *, int);
 
 
 std::string removeSpacing(const std::string& key)
@@ -19,25 +19,9 @@ std::string removeSpacing(const std::string& key)
 }
 
 
-void padding(unsigned char *message, int msgSize)
+// This function is supposed to pad using PKCS5
+unsigned char *PKCS5Padding(unsigned char *message, int messageLen)
 {
-    // How much we need to pad the msg
-    int padSize = (BLOCK_SIZE - msgSize) % BLOCK_SIZE;
-
-    if (padSize == 0)
-        padSize = BLOCK_SIZE;
-
-    unsigned char value = (unsigned char)padSize;
-
-    int start = msgSize;
-    for (int idx = 0; idx < padSize; idx++)
-        message[start++] = value;
-}
-
-
-unsigned char *PKCS5Padding(unsigned char *message)
-{
-    int messageLen = std::strlen((char *)message);
     int paddingSize = BLOCK_SIZE - (messageLen % BLOCK_SIZE);
     unsigned char* paddedMessage = (unsigned char *) malloc(messageLen + paddingSize);
 
