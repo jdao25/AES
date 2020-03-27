@@ -56,15 +56,18 @@ int main(int argc, char const *argv[])
     std::string encryptedFilename =
         inputFile.substr(0, inputFile.find_last_of(".")) + ".enc";
 
-    outfile.open(encryptedFilename, std::ios::app | std::ios::binary);
+    outfile.open(encryptedFilename, std::ios::out | std::ios::ate | std::ios::app | std::ios::binary);
 
     // Prompt the user for their key
-    std::cout << "Please enter your key:  ";
+    std::cout << "Please enter your hex key:  ";
     std::string inputKey;
     std::getline(std::cin, inputKey);
-    inputKey = removeSpacing(inputKey);     // Remove whitespace if any
 
-    unsigned char *key = (unsigned char*)inputKey.c_str();
+    unsigned char key[BLOCK_SIZE];
+    convertCharToHex(inputKey, key);
+
+    unsigned char allRoundKeys[176];    // This will hold all round keys
+    keyScheduling(key, allRoundKeys);   // Generate round key of round 1 - 10
 
     unsigned char message[BLOCK_SIZE];
     char *encryptedMessage;     // This will contain the encrypted message
@@ -79,10 +82,10 @@ int main(int argc, char const *argv[])
         if (bytesRead < BLOCK_SIZE)
         {
             unsigned char *paddedMessage = PKCS5Padding(message, bytesRead);
-            encryptedMessage = encryption(paddedMessage, key);
+            encryptedMessage = encryption(paddedMessage, allRoundKeys);
         }
         else
-            encryptedMessage = encryption(message, key);
+            encryptedMessage = encryption(message, allRoundKeys);
 
        outfile.write(encryptedMessage, BLOCK_SIZE);
     }

@@ -4,6 +4,7 @@
 
 std::string removeSpacing(const std::string&);
 unsigned char *PKCS5Padding(unsigned char *, int);
+void convertCharToHex(const std::string&);
 
 
 std::string removeSpacing(const std::string& key)
@@ -32,6 +33,19 @@ unsigned char *PKCS5Padding(unsigned char *message, int messageLen)
     	paddedMessage[idx] = paddingSize;
 
     return paddedMessage;
+}
+
+
+void convertCharToHex(const std::string& inputKey, unsigned char *key)
+{
+    // Given that inputKey is the original user key input
+
+    std::istringstream hexStream(inputKey);
+
+    unsigned int c;
+    int idx = 0;
+    while (hexStream >> std::hex >> c)
+        key[idx++] = c;
 }
 
 

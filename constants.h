@@ -4,6 +4,8 @@
 
 #define BLOCK_SIZE 16
 
+#define WORD 4
+
 
 // Rigndael Substitution Box
 // Will be using for byte substitution
