@@ -60,7 +60,7 @@ void keyScheduling(unsigned char *inputKey, unsigned char *expandedKey)
         currentKey[idx] = expandedKey[idx];
 
     const int totalRounds = 10;
-    for (int round = 1; round <= totalRounds; round++)
+    for (int round = 1; round <= totalRounds; round++)  // Execute for each round key
     {
         // This will get the last word of the key of the current round
         for (int idx = 0; idx < WORD; idx++)
@@ -123,6 +123,7 @@ void shiftRows(unsigned char *state)
         s4 = ((s4 >= 12)? row[s4] : (s4 + 5) );
     }
 
+    // Copying all in temp to state
     for (int idx = 0; idx < BLOCK_SIZE; idx++)
         state[idx] = tmp[idx];
 }
@@ -156,18 +157,20 @@ void  mixColumns(unsigned char *state)
 
 char *encryption(unsigned char *message, unsigned char *key)
 {
-
     unsigned char state[BLOCK_SIZE];
 
+    // Copying message to state
     for (int idx = 0; idx < BLOCK_SIZE; idx++)
         state[idx] = message[idx];
 
+    // First key addition
     keyAddition(state, key);
 
-    const unsigned int rounds = 9;
+    // For encryption, the first 9 rounds are idenical
+    const unsigned int numRounds = 9;
 
     //  For rounds 1 - 9
-    for (int round = 1; round <= 9; round++)
+    for (int round = 1; round <= numRounds; round++)
     {
         byteSubstitution(state);
         shiftRows(state);
@@ -180,10 +183,11 @@ char *encryption(unsigned char *message, unsigned char *key)
     shiftRows(state);
     keyAddition(state, key + 160);    // The word starting at roundKeys[160] is the last round key
 
-    char * encryptedMessage  = (char *) malloc(16);
+    // Copying over the state to the encryptedMessage.
+    char * encryptedMessage  = (char *) malloc(16);     // Contains the encryptedMessage for this particular block
     memcpy(encryptedMessage, state, 16);
 
-    return encryptedMessage;
+    return encryptedMessage;    // Returning the encryptedMessage
 }
 
 

@@ -2,9 +2,9 @@
 #define CONSTANTS_H
 
 
-#define BLOCK_SIZE 16
+#define BLOCK_SIZE 16   // This is the size of one block in AES 128. This number is in bytes
 
-#define WORD 4
+#define WORD 4      // This is 4 bytes
 
 
 // Rigndael Substitution Box

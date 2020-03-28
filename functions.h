@@ -2,8 +2,8 @@
 #define FUNCTIONS_H
 
 
-unsigned char *PKCS5Padding(unsigned char *, int);
-void convertCharToHex(const std::string&);
+unsigned char *PKCS5Padding(unsigned char *, int);  // Padding the plaintext
+void convertCharToHex(const std::string&);  // This is used to convert the key's hex values
 
 
 // This function is supposed to pad using PKCS5
@@ -22,6 +22,7 @@ unsigned char *PKCS5Padding(unsigned char *message, int messageLen)
 }
 
 
+// Convert the key's hex values 
 void convertCharToHex(const std::string& inputKey, unsigned char *key)
 {
     std::istringstream hexStream(inputKey);
