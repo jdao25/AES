@@ -2,22 +2,8 @@
 #define FUNCTIONS_H
 
 
-std::string removeSpacing(const std::string&);
 unsigned char *PKCS5Padding(unsigned char *, int);
 void convertCharToHex(const std::string&);
-
-
-std::string removeSpacing(const std::string& key)
-{
-    std::string newKey;
-    for (int idx = 0; idx < key.length(); idx++)
-    {
-        if (key[idx] != ' ')
-            newKey += key[idx];
-    }
-
-    return newKey;
-}
 
 
 // This function is supposed to pad using PKCS5
@@ -38,8 +24,6 @@ unsigned char *PKCS5Padding(unsigned char *message, int messageLen)
 
 void convertCharToHex(const std::string& inputKey, unsigned char *key)
 {
-    // Given that inputKey is the original user key input
-
     std::istringstream hexStream(inputKey);
 
     unsigned int c;

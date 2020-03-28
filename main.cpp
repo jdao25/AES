@@ -49,19 +49,22 @@ int main(int argc, char const *argv[])
 
 
 
-    // Write to the output file
-    std::ofstream outfile;
-
     // Create an encrypted file name. File named as filename.enc
     std::string encryptedFilename =
         inputFile.substr(0, inputFile.find_last_of(".")) + ".enc";
 
-    outfile.open(encryptedFilename, std::ios::out | std::ios::ate | std::ios::app | std::ios::binary);
-
     // Prompt the user for their key
-    std::cout << "Please enter your hex key:  ";
+    std::cout
+        << "Please enter your hex key (with spaces):  " << std::endl
+        << "Formating: 85 0b ca d3 af 16 d5 08 31 2d 76 65 a3 db ee 94\n" << std::endl
+        << "Key -->  ";
+
     std::string inputKey;
     std::getline(std::cin, inputKey);
+
+    // Write to the output file
+    std::ofstream outfile;
+    outfile.open(encryptedFilename, std::ios::out | std::ios::ate | std::ios::app | std::ios::binary);
 
     unsigned char key[BLOCK_SIZE];
     convertCharToHex(inputKey, key);
